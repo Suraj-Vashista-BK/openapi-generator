@@ -3948,7 +3948,9 @@ public class DefaultCodegen implements CodegenConfig {
             property.example = "ERROR_TO_EXAMPLE_VALUE";
         }
 
-        property.jsonSchema = Json.pretty(p);
+        // here p is of type Schema. When this is converted to string, the order of elements is changing. Solution is to use tree Map
+        // The Json.mapper() is inserting the values from p in random order into the datastructure we mention, hence I decided to use TreeMap instead of LinkedHashMap
+        property.jsonSchema = Json.pretty(Json.mapper().convertValue(p, TreeMap.class));
 
         if (p.getDeprecated() != null) {
             property.deprecated = p.getDeprecated();
